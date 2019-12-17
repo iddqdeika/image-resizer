@@ -7,8 +7,8 @@ import (
 )
 
 func main() {
-	s, err := service.NewResizeService(logger.ConsoleLogger(logger.LogAll), cfg.MapCfg(nil))
-	if err != nil{
+	s, err := service.NewResizeService(logger.ConsoleLogger(logger.LogAll), cfg.EnvCfg)
+	if err != nil {
 		panic(err)
 	}
 	s.Run()

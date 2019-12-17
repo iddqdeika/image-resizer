@@ -61,7 +61,7 @@ func NewResizeService(logger definitions.Logger, config definitions.Config) (def
 func parseCfg(config definitions.Config) (resizerCfg, error) {
 	cfg := resizerCfg{}
 
-	cfg.resizeRelativePath = config.StringWithDefaults("path", DefaultResizeRelativePath)
+	cfg.resizeRelativePath = config.StringWithDefaults("relative-path", DefaultResizeRelativePath)
 	cfg.concurrency = config.IntWithDefaults("concurrency", DefaultProcessingConcurrency)
 	cfg.downloadQueueSize = config.IntWithDefaults("download-queue-size", DefaultDownloadQueueSize)
 	cfg.incomingTimeoutInSec = config.IntWithDefaults("incoming-timeout", DefaultIncomingTimeoutInSec)
