@@ -9,6 +9,7 @@ import (
 	"image/png"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
@@ -26,6 +27,7 @@ const (
 	DefaultDownloadQueueSize     = 1024
 	DefaultDownloadTimeoutInSec  = 25
 	DefaultIncomingTimeoutInSec  = 25
+	DefaultPort                  = 8090
 )
 
 // Creates new instance of ResizerService with given (or default) logger and config
@@ -37,6 +39,10 @@ func NewResizeService(logger definitions.Logger, config definitions.Config) (def
 	cfg, err := parseCfg(config)
 	if err != nil {
 		return nil, fmt.Errorf("cant parse service config: %v", err)
+	}
+	err = os.Setenv("PORT", strconv.Itoa(cfg.port))
+	if err != nil {
+		logger.Error("cant change PORT variable\r\n")
 	}
 
 	res := &resizer{
@@ -60,6 +66,7 @@ func parseCfg(config definitions.Config) (resizerCfg, error) {
 	cfg.downloadQueueSize = config.IntWithDefaults("download-queue-size", DefaultDownloadQueueSize)
 	cfg.incomingTimeoutInSec = config.IntWithDefaults("incoming-timeout", DefaultIncomingTimeoutInSec)
 	cfg.downloadTimeoutInSec = config.IntWithDefaults("download-timeout", DefaultDownloadTimeoutInSec)
+	cfg.port = config.IntWithDefaults("http-port", DefaultPort)
 
 	return cfg, nil
 }
@@ -76,6 +83,8 @@ type resizerCfg struct {
 	incomingTimeoutInSec int
 	// http timeout while image downloading
 	downloadTimeoutInSec int
+
+	port int
 }
 
 type resizer struct {
