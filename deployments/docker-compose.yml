@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  nginx:
+    build: ../build/nginx
+    tty: true
+    links:
+      - service1
+      - service2
+    ports:
+      - '8090:8090'
+  service1:
+    build: ../
+    tty: true
+  service2:
+    build: ..
+    tty: true
