@@ -32,6 +32,7 @@ func TestParseParams(t *testing.T) {
 
 	req500, _ := http.NewRequest("GET", "http://localhost/?width=1920&height=1080&url=https://some-incorrect-image", nil)
 	req400, _ := http.NewRequest("GET", "http://localhost/?width=1920&height=1080", nil)
+	req404, _ := http.NewRequest("GET", "http://localhost/someuncknownshit?width=1920&height=1080&url=http://localhost:8089/testimg", nil)
 	req200, _ := http.NewRequest("GET", "http://localhost/?width=1920&height=1080&url=http://localhost:8089/testimg", nil)
 
 	r := httptest.NewRecorder()
@@ -44,6 +45,12 @@ func TestParseParams(t *testing.T) {
 	s.e.ServeHTTP(r, req400)
 	if r.Code != 400 {
 		t.Errorf("service must return 400 with uncomplete query params list")
+	}
+
+	r = httptest.NewRecorder()
+	s.e.ServeHTTP(r, req404)
+	if r.Code != 404 {
+		t.Errorf("service must return 404 with uncknown path")
 	}
 
 	r = httptest.NewRecorder()
