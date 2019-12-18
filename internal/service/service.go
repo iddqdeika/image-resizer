@@ -33,6 +33,10 @@ const (
 // Creates new instance of ResizerService with given (or default) logger and config
 // Returns error in case of incorrect config given
 func NewResizeService(logger definitions.Logger, config definitions.Config) (definitions.Service, error) {
+	return newResizeService(logger, config)
+}
+
+func newResizeService(logger definitions.Logger, config definitions.Config) (*resizer, error) {
 	if logger == nil {
 		logger = defaultlogger.Logger
 	}
@@ -100,6 +104,7 @@ func (r *resizer) Run(addr ...string) {
 }
 
 func (r *resizer) fillRoutes() {
+	r.e.Use()
 	r.e.GET(r.cfg.resizeRelativePath, r.resizeHandler)
 }
 
@@ -180,7 +185,7 @@ type params struct {
 	url    string
 }
 
-// Check and parse query params
+// Check and parse url query params
 func (r *resizer) parseParams(ctx *gin.Context) (params, error) {
 	w := ctx.Request.URL.Query().Get("width")
 	if len(w) == 0 {
